@@ -5,8 +5,11 @@
 	const loader = window._1gam.loader;
 	const player = window._1gam.player;
 	const input = window._1gam.input;
+	const level = window._1gam.level;
 
 	game.run = _run;
+	game.die = _die;
+	game.startLevel = _startLevel;
 
 	game.setup = {
 		preload: _preload,
@@ -21,7 +24,6 @@
 	});
 
 	function _run() {
-		console.log("_run");
 		_1gam.p = new Phaser.Game(800, 600, Phaser.AUTO, "1gam", game.setup, false, false);
 	}
 
@@ -32,21 +34,29 @@
 	function _create() {
 		_1gam.p.physics.startSystem(Phaser.Physics.ARCADE);
 		input.init();
-		game.player = new player.Player();
-
-		game.map = _1gam.p.add.tilemap("level1");
-		game.map.addTilesetImage("tilemap", "tilemap");
-		game.tileLayer = game.map.createLayer(0);
-		game.tileLayer.resizeWorld();
-		game.map.setCollisionByExclusion([]);
+		_startLevel("level1");
 	}
 
 	function _update() {
-		_1gam.p.physics.arcade.collide(game.player.sprite, game.tileLayer);
+		game.currentLevel.update();
 		game.player.update();
 	}
 
 	function _render() {
 
+	}
+
+	function _die() {
+		game.player.die();
+		setTimeout(function() {
+			game.currentLevel.destroy();
+			game.player.destroy();
+			_startLevel("level1");
+		}, 2000);
+	}
+
+	function _startLevel(s) {
+		game.player = new player.Player();
+		game.currentLevel = new level.Level(s);
 	}
 })();
