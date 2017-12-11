@@ -6,6 +6,11 @@
 
 	level.Level = Level;
 
+	const entityCtorLookup = {
+		"sawblade": _1gam.entities.Sawblade,
+		"crusher": _1gam.entities.Crusher
+	};
+
 	function Level(tmx) {
 		this.loadMap(tmx);
 		this.loadEntities();
@@ -27,20 +32,18 @@
 				_1gam.game.player.sprite.x = e.x;
 				_1gam.game.player.sprite.y = e.y;
 			} else {
-				this.entities.push(this.createEntity(e));
+				this.createEntity(e);
 			}
 		}
 	};
 
 	Level.prototype.createEntity = function(definition) {
-		return new (({
-			"sawblade": _1gam.entities.sawblade
-		})[definition.type])(definition);
+		this.entities.push(new (entityCtorLookup[definition.type])(definition));
 	}
 
 	Level.prototype.update = function() {
 		if (_1gam.game.player.dead) {
-			_1gam.p.physics.arcade.collide(_1gam.game.player.emitter, this.tileLayer);
+			_1gam.p.physics.arcade.collide(_1gam.game.player.deathEmitter, this.tileLayer);
 		} else {
 			_1gam.p.physics.arcade.collide(_1gam.game.player.sprite, this.tileLayer);
 		}
@@ -57,7 +60,7 @@
 
 	Level.prototype.destroy = function() {
 		for(let e of this.entities) {
-			e.sprite.destroy();
+			e.destroy();
 		}
 	};
 })();

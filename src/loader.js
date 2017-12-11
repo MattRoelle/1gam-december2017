@@ -9,5 +9,9 @@
 		g.load.image("sawblade", "assets/sawblade.png");
 		g.load.image("sawblade-base", "assets/sawblade_base.png");
 		g.load.image("grape-particle", "assets/grape-particle.png");
+		g.load.image("white-particle", "assets/white-particle.png");
+		g.load.image("crusher-base", "assets/crusher-base.png");
+		g.load.image("crusher-head", "assets/crusher-head.png");
+		g.load.image("crusher-arm", "assets/crusher-arm.png");
 	};
 })();
