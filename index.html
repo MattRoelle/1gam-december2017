@@ -2,22 +2,35 @@
 <html>
 	<head>
 		<title>Phaser Testing</title>
+		<style>
+@font-face  {
+	font-family: "slkscr";
+	font-weight: normal;
+	src: url("./assets/fonts/slkscrb.ttf");
+}
+		</style>
 	</head>
 	<body>
 		<button id="fullscreen">Fullscreen</button>
 		<!-- Vendor -->
 		<script src="./vendor/phaser.js"></script>
+		<script src="./vendor/TweenLite.min.js"></script>
 
 		<!-- Src -->
 		<script src="./src/init.js"></script>
+		<script src="./src/utils.js"></script>
 		<script src="./src/constants.js"></script>
 		<script src="./src/input.js"></script>
 		<script src="./src/entities/sawblade.js"></script>
 		<script src="./src/entities/crusher.js"></script>
+		<script src="./src/entities/warp.js"></script>
+		<script src="./src/entities/sign.js"></script>
 		<script src="./src/level.js"></script>
 		<script src="./src/loader.js"></script>
 		<script src="./src/player.js"></script>
 		<script src="./src/game.js"></script>
 		<script src="./src/main.js"></script>
+
+		<h1 id="font-preloader" style="font-family: slkscr; visibility: hidden; width: 1px; height: 1px; overflow: hidden;">123123123123</h1>
 	</body>
 </html>

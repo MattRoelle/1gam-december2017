@@ -8,5 +8,6 @@
 	function _init() {
 		input.movement = _1gam.p.input.keyboard.createCursorKeys();
 		input.jump = _1gam.p.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		input.interact = _1gam.p.input.keyboard.addKey(Phaser.Keyboard.Z);
 	}
 })();

@@ -10,6 +10,7 @@
 	game.run = _run;
 	game.die = _die;
 	game.startLevel = _startLevel;
+	game.warpToLevel = _warpToLevel;
 
 	game.setup = {
 		preload: _preload,
@@ -49,14 +50,18 @@
 	function _die() {
 		game.player.die();
 		setTimeout(function() {
-			game.currentLevel.destroy();
-			game.player.destroy();
-			_startLevel("level1");
+			_startLevel(game.currentLevel.id);
 		}, 2000);
 	}
 
 	function _startLevel(s) {
+		if (!!game.player) game.player.destroy();
+		if (!!game.currentLevel) game.currentLevel.destroy();
 		game.player = new player.Player();
 		game.currentLevel = new level.Level(s);
+	}
+
+	function _warpToLevel(target) {
+		_startLevel(target);
 	}
 })();
