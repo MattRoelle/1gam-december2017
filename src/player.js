@@ -14,6 +14,7 @@
 		this.sprite.animations.add("jump", [7], 0, true);
 		this.sprite.animations.add("fall", [8], 0, true);
 		this.sprite.animations.add("slow", [9], 0, true);
+		this.sprite.animations.add("wallslide", [10], 0, true);
 		_1gam.p.camera.follow(this.sprite);
 
 		this.lastJumpAt = -1000;
@@ -41,10 +42,18 @@
 			let moving = false;
 			let slowingDown = false;
 			const absXVel = Math.abs(this.sprite.body.velocity.x)
+			const onWall = this.sprite.body.onWall() || this.sprite.body.touching.left || this.sprite.body.touching.right;
 			const onFloor = this.sprite.body.onFloor() || this.sprite.body.touching.down;
 			const t = _1gam.p.time.now;
 
-			if (onFloor) this.lastOnFloorAt = t;
+			if (onWall && this.sprite.body.velocity.y > 0) {
+				this.sprite.body.gravity.y = C.GRAVITY*C.PLAYER_WALLSLIDE_GRAVITY_SCALE;
+			} else {
+				this.sprite.body.gravity.y = C.GRAVITY;
+			}
+
+
+			if (onFloor || onWall) this.lastOnFloorAt = t;
 			if (absXVel < C.PLAYER_SPEED_START_THRESHOLD) {
 				speedMultiplier = C.PLAYER_SPEED_START_MULTIPLIER;
 			}
@@ -52,10 +61,12 @@
 			if (_1gam.input.movement.left.isDown) {
 				this.sprite.body.velocity.x -= C.PLAYER_SPEED*speedMultiplier;
 				moving = true;
+				if (this.sprite.body.velocity.x > 0) slowingDown = true;
 			}
 			else if (_1gam.input.movement.right.isDown) {
 				this.sprite.body.velocity.x += C.PLAYER_SPEED*speedMultiplier;
 				moving = true;
+				if (this.sprite.body.velocity.x < 0) slowingDown = true;
 			}
 
 			if (this.sprite.body.velocity.x > 20) this.sprite.scale.set(1, 1);
@@ -63,7 +74,7 @@
 
 			if (absXVel < C.PLAYER_IDLE_THRESHOLD) {
 				this.sprite.animations.play("idle");
-			} else if (!moving && !absXVel < C.PLAYER_SLOWDOWN_ANIM_THRESHOLD)  {
+			} else if (!moving && !absXVel < C.PLAYER_SLOWDOWN_ANIM_THRESHOLD || slowingDown)  {
 				this.sprite.animations.play("slow");
 				slowingDown = true;
 			} else {
@@ -76,7 +87,7 @@
 				, this.sprite.body.velocity.x);
 
 			if (_1gam.input.jump.isDown) {
-				if ((onFloor || (this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD) > t) && t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) {
+				if ((onFloor || (!onWall && this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD) > t) && t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) {
 					this.lastJumpAt = t;
 					this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
 				}
@@ -88,6 +99,10 @@
 			if (!onFloor) {
 				if (this.sprite.body.velocity.y < 50) this.sprite.animations.play("jump");
 				else this.sprite.animations.play("fall");
+			}
+
+			if (onWall) {
+				this.sprite.animations.play("wallslide");
 			}
 
 			if (slowingDown && onFloor && absXVel > 50) {
