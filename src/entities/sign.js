@@ -11,10 +11,11 @@
 
 			this.arrowSprite = _1gam.p.add.sprite(definition.x + 11, definition.y - 25, "arrow");
 			this.ogArrowY = this.arrowSprite.y;
-			_1gam.p.physics.enable([this.sprite], Phaser.Physics.ARCADE);
 
 			this.open = false;
 			this.timeOpened = 0;
+			this.currentText = 1;
+			this.heldInteractionButtonLastUpdate = false;
 
 			this.textGroup = _1gam.p.add.group();
 			this.textGroup.fixedToCamera = true;
@@ -34,24 +35,11 @@
 		}
 
 		update() {
-			_1gam.p.physics.arcade.overlap(_1gam.game.player.sprite, this.sprite, this.onCollision, null, this);
-			this.arrowSprite.y = this.ogArrowY - Math.sin(_1gam.p.time.now/100)*10;
-
-			if (_1gam.utils.dist(this.sprite.x, this.sprite.y, _1gam.game.player.sprite.x, _1gam.game.player.sprite.y) < C.INTERACT_DISTANCE) {
-				this.arrowSprite.alpha = 1;
-
-				if (_1gam.input.interact.isDown && !this.open) {
-					this.openText();
-				}
-			} else {
-				this.open = false;
-				this.arrowSprite.alpha = 0;
-			}
+			const dt = _1gam.p.time.now - this.timeOpened;
+			const charsVisible = Math.floor(dt/40);
 
 			if (this.open) {
-				const dt = _1gam.p.time.now - this.timeOpened;
-				const charsVisible = Math.floor(dt/25);
-				this.text.text = this.def.properties.text.substring(0, charsVisible);
+				this.text.text = this.def.properties[`text${this.currentText}`].substring(0, charsVisible);
 				this.textSprite.alpha = 1;
 				this.text.alpha = 1;
 			}
@@ -59,11 +47,43 @@
 				this.textSprite.alpha = 0;
 				this.text.alpha = 0;
 			}
+
+			this.arrowSprite.y = this.ogArrowY - Math.sin(_1gam.p.time.now/100)*10;
+
+			if (_1gam.utils.dist(this.sprite.x, this.sprite.y, _1gam.game.player.sprite.x, _1gam.game.player.sprite.y) < C.INTERACT_DISTANCE) {
+				this.arrowSprite.alpha = 1;
+
+				if (_1gam.input.interact.isDown) {
+					if (!this.heldInteractionButtonLastUpdate) {
+						if (!this.open) {
+							this.openText();
+						} else {
+							if (charsVisible < this.def.properties[`text${this.currentText}`].length) {
+								this.timeOpened -= 5000;
+							} else if (!!this.def.properties[`text${this.currentText + 1}`]) {
+								this.timeOpened = _1gam.p.time.now;
+								this.currentText++;
+							} else {
+								this.currentText = 1;
+								this.open = false;
+							}
+						}
+					}
+					this.heldInteractionButtonLastUpdate = true;
+				} else {
+					this.heldInteractionButtonLastUpdate = false;
+				}
+			} else {
+				this.open = false;
+				this.currentText = 1;
+				this.arrowSprite.alpha = 0;
+			}
 		}
 
 		openText() {
 			this.open = true;
 			this.timeOpened = _1gam.p.time.now;
+			this.text.text = "";
 		}
 
 		render() {
