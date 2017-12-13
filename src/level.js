@@ -21,8 +21,12 @@
 		loadMap(tmx) {
 			this.map = _1gam.p.add.tilemap(tmx);
 			this.map.addTilesetImage("tilemap", "tilemap");
-			this.tileLayer = this.map.createLayer(0);
-			this.tileLayer2 = this.map.createLayer(1);
+			for(let i = 0; i < this.map.layers.length; i++) {
+				const newLayer = this.map.createLayer(i);
+				if (i == 0) {
+					this.tileLayer = newLayer;
+				}
+			}
 			this.tileLayer.resizeWorld();
 			this.map.setCollisionByExclusion([1]);
 		}

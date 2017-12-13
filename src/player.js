@@ -15,7 +15,11 @@
 			this.sprite.animations.add("fall", [8], 0, true);
 			this.sprite.animations.add("slow", [9], 0, true);
 			this.sprite.animations.add("wallslide", [10], 0, true);
+			this.sprite.animations.add("exit", [11, 12], 8, true);
 			_1gam.p.camera.follow(this.sprite);
+
+			this.exiting = false;
+			this.timeStartedExit = 0;
 
 			this.lastJumpAt = -1000;
 			this.lastOnFloorAt = -1000;
@@ -46,7 +50,8 @@
 		}
 
 		update() {
-			if (!this.dead) {
+			this.sprite.bringToTop();
+			if (!this.dead && !this.exiting) {
 				let speedMultiplier = 1;
 				let moving = false;
 				let slowingDown = false;
@@ -146,6 +151,15 @@
 				//this.sprite.body.velocity.y = Math.max(C.PLAYER_MAX_FALL_SPEED, this.sprite.body.velocity.y);
 			
 				this.onWallLastFrame = onWall;
+			} else if (this.exiting) {
+				const dt = _1gam.p.time.now - this.timeStartedExit;
+				const scale = Math.max(0, 1 - (dt/1000));
+				this.sprite.scale.setTo(scale, scale);
+				this.sprite.position.y -= 2.5;
+
+				if (dt > 1000) {
+					_1gam.game.warpToLevel(this.targetLevel);
+				}
 			}
 		}
 
@@ -165,6 +179,13 @@
 			!!this.slowEmitter && this.slowEmitter.destroy();
 			!!this.wallslideEmitter && this.wallslideEmitter.destroy();
 			!!this.sprite && this.sprite.destroy();
+		}
+
+		exit(targetLevel) {
+			this.exiting = true;
+			this.sprite.animations.play("exit");
+			this.timeStartedExit = _1gam.p.time.now;
+			this.targetLevel = targetLevel;
 		}
 	}
 })();

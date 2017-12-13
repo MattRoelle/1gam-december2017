@@ -58,6 +58,7 @@
 		if (!!game.player) game.player.destroy();
 		if (!!game.currentLevel) game.currentLevel.destroy();
 		game.player = new player.Player();
+		console.log(s);
 		game.currentLevel = new level.Level(s);
 	}
 
