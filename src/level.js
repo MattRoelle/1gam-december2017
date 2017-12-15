@@ -9,6 +9,8 @@
 		"crusher": _1gam.entities.Crusher,
 		"warp": _1gam.entities.Warp,
 		"sign": _1gam.entities.Sign,
+		"spinner": _1gam.entities.Spinner,
+		"kill": _1gam.entities.Kill
 	};
 
 	level.Level = class Level {
@@ -21,11 +23,13 @@
 		loadMap(tmx) {
 			this.map = _1gam.p.add.tilemap(tmx);
 			this.map.addTilesetImage("tilemap", "tilemap");
+			this.tileLayers = [];
 			for(let i = 0; i < this.map.layers.length; i++) {
 				const newLayer = this.map.createLayer(i);
 				if (i == 0) {
 					this.tileLayer = newLayer;
 				}
+				this.tileLayers.push(newLayer);
 			}
 			this.tileLayer.resizeWorld();
 			this.map.setCollisionByExclusion([1]);
@@ -46,6 +50,7 @@
 		}
 
 		createEntity(definition) {
+			console.log(definition.type);
 			this.entities.push(new (entityCtorLookup[definition.type])(definition));
 		}
 
@@ -68,7 +73,9 @@
 
 		destroy() {
 			this.map.destroy();
-			this.tileLayer.destroy();
+			for(let layer of this.tileLayers) {
+				layer.destroy();
+			}
 			for(let e of this.entities) {
 				e.destroy();
 			}

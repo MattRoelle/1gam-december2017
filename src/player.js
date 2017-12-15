@@ -29,7 +29,6 @@
 			this.sprite.body.gravity.y = C.GRAVITY;
 			this.sprite.body.drag.x = C.PLAYER_DRAG;
 
-
 			this.slowEmitter = _1gam.p.add.emitter(this.sprite.x, this.sprite.y, 100);
 			this.slowEmitter.makeParticles("white-particle");
 			this.slowEmitter.setYSpeed(-80, -120);
@@ -38,6 +37,8 @@
 			this.slowEmitter.start(false, 500, 10, 0, false);
 
 			this.onWallLastFrame = false;
+			this.lastWallSlideAt = 0;
+			this.lastWallSide = 0;
 
 			this.wallslideEmitter = _1gam.p.add.emitter(this.sprite.x, this.sprite.y, 100);
 			this.wallslideEmitter.makeParticles("white-particle");
@@ -60,7 +61,7 @@
 				const onFloor = this.sprite.body.onFloor() || this.sprite.body.touching.down;
 				const t = _1gam.p.time.now;
 
-				if (onWall && this.sprite.body.velocity.y > 0) {
+				if (onWall && this.sprite.body.velocity.y > 150) {
 					this.sprite.body.gravity.y = C.GRAVITY*C.PLAYER_WALLSLIDE_GRAVITY_SCALE;
 				} else {
 					this.sprite.body.gravity.y = C.GRAVITY;
@@ -101,7 +102,21 @@
 					, this.sprite.body.velocity.x);
 
 				if (_1gam.input.jump.isDown) {
-					if ((onFloor || (!onWall && this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD) > t) && t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) {
+					if ((onFloor || 
+						(
+							(!onWall &&
+								this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
+								this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
+							) ||
+							(
+
+								this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
+								(
+									(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
+									(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
+								)
+							)
+						&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL)) {
 						this.lastJumpAt = t;
 						this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
 					}
@@ -123,11 +138,16 @@
 
 				this.wallslideEmitter.y = this.sprite.y;
 				if (onWall) {
-					if (!this.onWallLastFrame) {
+
+					if (this.sprite.body.blocked.left) this.lastWallSide = -1;
+					else if (this.sprite.body.blocked.right) this.lastWallSide = 1;
+
+					if (this.lastWallSlideAt + C.PLAYER_WALLSLIDE_INTERVAL < _1gam.p.time.now) {
 						this.sprite.body.velocity.y *= 0.2;
 					}
 					this.sprite.animations.play("wallslide");
 					this.wallslideEmitter.on = true;
+					this.lastWallSlideAt = _1gam.p.time.now;
 				} else {
 					this.wallslideEmitter.on = false;
 				}

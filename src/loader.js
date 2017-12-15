@@ -5,6 +5,9 @@
 	loader.load = (g) => {
 		g.load.tilemap("level1", "assets/levels/level1.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level2", "assets/levels/level2.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level3", "assets/levels/level3.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level4", "assets/levels/level4.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("testlevel", "assets/levels/testlevel.json", null, Phaser.Tilemap.TILED_JSON);
 
 		g.load.image("tilemap", "assets/tilemap.png", 32, 32);
 		g.load.spritesheet("grape", "assets/grape.png", 32, 32);
@@ -20,5 +23,9 @@
 		g.load.image("sign", "assets/sign.png");
 		g.load.image("arrow", "assets/arrow.png");
 		g.load.image("text-bg", "assets/text.png");
+
+		g.load.image("spinner-base", "assets/spinner-base.png");
+		g.load.image("spinner-head", "assets/spinner-head.png");
+		g.load.image("spinner-arm", "assets/spinner-arm.png");
 	};
 })();

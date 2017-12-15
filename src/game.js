@@ -25,7 +25,7 @@
 	});
 
 	function _run() {
-		_1gam.p = new Phaser.Game(800, 600, Phaser.AUTO, "1gam", game.setup, false, false);
+		_1gam.p = new Phaser.Game(800, 600, Phaser.AUTO, "game-host", game.setup, false, false);
 	}
 
 	function _preload() {

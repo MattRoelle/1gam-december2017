@@ -13,10 +13,8 @@
 
 			this.sprite = _1gam.p.add.sprite(definition.x + 16, definition.y, "sawblade");
 			this.baseSprite = _1gam.p.add.sprite(definition.x + 16, definition.y + 16, "sawblade-base");
-			_1gam.p.physics.enable([this.sprite, this.baseSprite], Phaser.Physics.ARCADE);
+			_1gam.p.physics.enable([this.sprite], Phaser.Physics.ARCADE);
 			this.sprite.body.immovable = true;
-			this.baseSprite.body.setSize(96, 32, 0, 0);
-			this.baseSprite.body.immovable = true;
 
 			switch(this.orientation) {
 				case "up":
@@ -41,8 +39,6 @@
 		}
 		update() {
 			_1gam.p.physics.arcade.overlap(_1gam.game.player.sprite, this.sprite, this.onCollision, null, this);
-			_1gam.p.physics.arcade.collide(_1gam.game.player.sprite, this.sprite);
-			_1gam.p.physics.arcade.collide(_1gam.game.player.sprite, this.baseSprite);
 			this.sprite.angle += 6.5;
 		};
 		render() {
@@ -55,6 +51,7 @@
 		};
 		destroy () {
 			this.sprite.destroy();
+			this.baseSprite.destroy();
 		};
 	}
 })();

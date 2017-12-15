@@ -8,9 +8,11 @@
 	font-weight: normal;
 	src: url("./assets/fonts/slkscrb.ttf");
 }
+body, html { margin: 0; padding: 0; }
 		</style>
 	</head>
 	<body>
+		<div id="game-host"></div>
 		<button id="fullscreen">Fullscreen</button>
 		<!-- Vendor -->
 		<script src="./vendor/phaser.js"></script>
@@ -21,6 +23,8 @@
 		<script src="./src/utils.js"></script>
 		<script src="./src/constants.js"></script>
 		<script src="./src/input.js"></script>
+		<script src="./src/entities/kill.js"></script>
+		<script src="./src/entities/spinner.js"></script>
 		<script src="./src/entities/sawblade.js"></script>
 		<script src="./src/entities/crusher.js"></script>
 		<script src="./src/entities/warp.js"></script>
