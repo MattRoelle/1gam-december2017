@@ -36,6 +36,10 @@
 
 			this.sprite.anchor.set(0.5);
 			this.baseSprite.anchor.set(0.5);
+
+			if (this.def.properties.ignoreBase) {
+				this.baseSprite.alpha = 0;
+			}
 		}
 		update() {
 			_1gam.p.physics.arcade.overlap(_1gam.game.player.sprite, this.sprite, this.onCollision, null, this);

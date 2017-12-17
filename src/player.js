@@ -57,7 +57,7 @@
 				let moving = false;
 				let slowingDown = false;
 				const absXVel = Math.abs(this.sprite.body.velocity.x)
-				const onWall = this.sprite.body.onWall() || this.sprite.body.touching.left || this.sprite.body.touching.right;
+				const onWall = this.sprite.body.onWall();
 				const onFloor = this.sprite.body.onFloor() || this.sprite.body.touching.down;
 				const t = _1gam.p.time.now;
 
@@ -67,6 +67,11 @@
 					this.sprite.body.gravity.y = C.GRAVITY;
 				}
 
+				if (onFloor || onWall) {
+					this.sprite.body.drag.x = C.PLAYER_DRAG;
+				} else {
+					this.sprite.body.drag.x = C.PLAYER_AIR_DRAG;
+				}
 
 				if (onFloor || onWall) this.lastOnFloorAt = t;
 				if (absXVel < C.PLAYER_SPEED_START_THRESHOLD) {
@@ -74,14 +79,18 @@
 				}
 
 				if (_1gam.input.movement.left.isDown) {
-					this.sprite.body.velocity.x -= C.PLAYER_SPEED*speedMultiplier;
 					moving = true;
-					if (this.sprite.body.velocity.x > 0) slowingDown = true;
+					if (this.sprite.body.velocity.x > -C.PLAYER_RUN_CUTOFF) {
+						this.sprite.body.velocity.x -= C.PLAYER_SPEED*speedMultiplier;
+						if (this.sprite.body.velocity.x > 0) slowingDown = true;
+					}
 				}
 				else if (_1gam.input.movement.right.isDown) {
-					this.sprite.body.velocity.x += C.PLAYER_SPEED*speedMultiplier;
 					moving = true;
-					if (this.sprite.body.velocity.x < 0) slowingDown = true;
+					if (this.sprite.body.velocity.x < C.PLAYER_RUN_CUTOFF) {
+						this.sprite.body.velocity.x += C.PLAYER_SPEED*speedMultiplier;
+						if (this.sprite.body.velocity.x < 0) slowingDown = true;
+					}
 				}
 
 				if (this.sprite.body.velocity.x > 20) this.sprite.scale.set(1, 1);
@@ -101,8 +110,7 @@
 				this.sprite.body.velocity.x = Math.min(C.PLAYER_MAX_SPEED
 					, this.sprite.body.velocity.x);
 
-				if (_1gam.input.jump.isDown) {
-					if ((onFloor || 
+				if (_1gam.input.jump.isDown) { if ((onFloor || 
 						(
 							(!onWall &&
 								this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
@@ -184,6 +192,7 @@
 		}
 
 		die() {
+			if (this.dead) return;
 			this.sprite.destroy();
 			this.dead = true;
 			this.deathEmitter = _1gam.p.add.emitter(this.sprite.x, this.sprite.y, 100);

@@ -10,7 +10,9 @@
 		"warp": _1gam.entities.Warp,
 		"sign": _1gam.entities.Sign,
 		"spinner": _1gam.entities.Spinner,
-		"kill": _1gam.entities.Kill
+		"kill": _1gam.entities.Kill,
+		"conveyor": _1gam.entities.Conveyor,
+		"turret": _1gam.entities.Turret,
 	};
 
 	level.Level = class Level {

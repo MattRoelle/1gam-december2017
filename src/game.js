@@ -48,6 +48,7 @@
 	}
 
 	function _die() {
+		if (game.player.dead) return;
 		game.player.die();
 		setTimeout(function() {
 			_startLevel(game.currentLevel.id);
