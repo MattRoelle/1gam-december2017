@@ -42,19 +42,21 @@
                     {
                      "fireRate":1500,
                      "orientation":"left",
-                     "shotSpeed":200
+                     "range":5,
+                     "shotSpeed":400
                     },
                  "propertytypes":
                     {
                      "fireRate":"int",
                      "orientation":"string",
+                     "range":"int",
                      "shotSpeed":"int"
                     },
                  "rotation":0,
                  "type":"turret",
                  "visible":true,
                  "width":31.090909090909,
-                 "x":1217.5,
+                 "x":1217.16666666667,
                  "y":1055.5
                 }],
          "opacity":1,
@@ -82,7 +84,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":64,
+ "nextobjectid":65,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

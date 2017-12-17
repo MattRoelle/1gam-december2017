@@ -37,6 +37,7 @@
 		}
 
 		destroy() {
+			this.arrowSprite.destroy();
 			this.sprite.destroy();
 		}
 	}

@@ -91,6 +91,7 @@
 
 		destroy() {
 			this.sprite.destroy();
+			this.arrowSprite.destroy();
 		}
 	}
 })();

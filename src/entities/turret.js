@@ -7,8 +7,8 @@
 		constructor(definition) {
 			this.def = definition;
 
-			this.baseSprite = _1gam.p.add.sprite(definition.x + 16, definition.y + 16, "turret");
-			this.baseSprite.anchor.set(0.5);
+			this.sprite = _1gam.p.add.sprite(definition.x + 16, definition.y + 16, "turret");
+			this.sprite.anchor.set(0.5);
 			this.bullets = [];
 
 			this.lastShotAt = _1gam.p.time.now;
@@ -17,12 +17,25 @@
 				case "left":
 					this.fireX = -1;
 					this.fireY = 0;
+					this.emitter = _1gam.p.add.emitter(this.sprite.x - 8, this.sprite.y, 100);
 					break;
 			}
+
+			this.emitter.makeParticles("white-particle");
+			this.emitter.setXSpeed(0, 0);
+			this.emitter.setYSpeed(120, -120);
 		}
 
 		shoot() {
-			this.bullets.push(new Bullet(this.baseSprite.x, this.baseSprite.y, this.fireX, this.fireY, this.def.properties.shotSpeed));
+			this.emitter.explode(500, 5);
+			this.bullets.push(new Bullet(
+				this.sprite.x,
+				this.sprite.y,
+				this.fireX,
+				this.fireY,
+				this.def.properties.shotSpeed,
+				this.def.properties.range*C.TILE_SIZE
+			));
 		}
 
 		update() {
@@ -44,7 +57,7 @@
 		}
 
 		destroy() {
-			this.baseSprite.destroy();
+			this.sprite.destroy();
 			for(let b of this.bullets) {
 				b.destroy();
 			}
@@ -52,17 +65,19 @@
 	}
 
 	class Bullet {
-		constructor(x, y, dx, dy, speed) {
+		constructor(x, y, dx, dy, speed, range) {
 			this.sprite = _1gam.p.add.sprite(x, y, "turret-bullet");
 			this.sprite.anchor.set(0.5);
 
+			this.ogx = x;
+			this.ogy = y;
+			this.range = range;
 			this.dx = dx;
 			this.dy = dy;
 			this.speed = speed;
 
 			_1gam.p.physics.enable([this.sprite], Phaser.Physics.ARCADE);
 			this.sprite.body.setSize(6, 6, 1, 1)
-			this.sprite.body.immovable = true;
 			this.timeSpawned = _1gam.p.time.now;
 
 			this.dead = false;
@@ -72,19 +87,18 @@
 		}
 
 		update() {
-			_1gam.p.physics.arcade.overlap(_1gam.game.player.sprite, this.sprite, this.oCollision, null, this);
+			_1gam.p.physics.arcade.overlap(_1gam.game.player.sprite, this.sprite, this.onCollision, null, this);
 
-			if (_1gam.p.time.now - this.timeSpawned > 250) {
-				console.log(_1gam.game.currentLevel.map);
-				_1gam.p.physics.arcade.overlap(_1gam.game.currentLevel.map, this.sprite, () => {
-					this.dead = true;
-				}, null, this);
+			if (_1gam.utils.dist(this.sprite.x, this.sprite.y, this.ogx, this.ogy) > this.range) {
+				this.dead = true;
 			}
 		}
 
 		onCollision(col) {
+			console.log("collision");
 			if (col.key == C.PLAYER_SPRITE_KEY) {
 				_1gam.game.die();
+				this.dead = true;
 			}
 		}
 

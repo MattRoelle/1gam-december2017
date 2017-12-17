@@ -35,6 +35,7 @@
 			this.slowEmitter.on = false;
 			this.slowEmitter.setScale(0, 1, 0, 1, -300);
 			this.slowEmitter.start(false, 500, 10, 0, false);
+			this.slowEmitter.particleBringToTop = true;
 
 			this.onWallLastFrame = false;
 			this.lastWallSlideAt = 0;
