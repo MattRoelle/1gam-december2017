@@ -18,9 +18,6 @@
 			this.sprite.animations.add("exit", [11, 12], 8, true);
 			_1gam.p.camera.follow(this.sprite);
 
-			this.exiting = false;
-			this.timeStartedExit = 0;
-
 			this.lastJumpAt = -1000;
 			this.lastOnFloorAt = -1000;
 
@@ -49,6 +46,7 @@
 			this.wallslideEmitter.start(false, 500, 10, 0, false);
 
 			this.dead = false;
+			this.exiting = false;
 		}
 
 		update() {
@@ -112,23 +110,23 @@
 					, this.sprite.body.velocity.x);
 
 				if (_1gam.input.jump.isDown) { if ((onFloor || 
+					(
+						(!onWall &&
+							this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
+							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
+						) ||
 						(
-							(!onWall &&
-								this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
-								this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
-							) ||
-							(
 
-								this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
-								(
-									(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
-									(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
-								)
-							)
-						&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL)) {
-						this.lastJumpAt = t;
-						this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
-					}
+							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
+							(
+								(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
+								(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
+						)
+					)
+					&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL)) {
+					this.lastJumpAt = t;
+					this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
+				}
 					else if (!onFloor && t < this.lastJumpAt + C.PLAYER_JUMP_HOLD_THRESHOLD) {
 						this.sprite.body.velocity.y += C.PLAYER_JUMP_HOLD_FORCE;
 					}
@@ -178,17 +176,8 @@
 					this.slowEmitter.on = false;
 				}
 				//this.sprite.body.velocity.y = Math.max(C.PLAYER_MAX_FALL_SPEED, this.sprite.body.velocity.y);
-			
-				this.onWallLastFrame = onWall;
-			} else if (this.exiting) {
-				const dt = _1gam.p.time.now - this.timeStartedExit;
-				const scale = Math.max(0, 1 - (dt/1000));
-				this.sprite.scale.setTo(scale, scale);
-				this.sprite.position.y -= 2.5;
 
-				if (dt > 1000) {
-					_1gam.game.warpToLevel(this.targetLevel);
-				}
+				this.onWallLastFrame = onWall;
 			}
 		}
 
@@ -202,6 +191,7 @@
 			this.deathEmitter.makeParticles("grape-particle");
 			this.deathEmitter.gravity = 300;
 			this.deathEmitter.explode(2000, 100);
+
 		}
 
 		destroy() {
@@ -212,10 +202,13 @@
 		}
 
 		exit(targetLevel) {
+			if (this.exiting) return;
 			this.exiting = true;
 			this.sprite.animations.play("exit");
-			this.timeStartedExit = _1gam.p.time.now;
-			this.targetLevel = targetLevel;
+			const t = _1gam.p.add.tween(_1gam.p.world).to({ alpha: 0 }, 400, Phaser.Easing.Linear.None, true, 350, 0);
+			t.onComplete.add(() => {
+				_1gam.game.warpToLevel(targetLevel);
+			});
 		}
 	}
 })();

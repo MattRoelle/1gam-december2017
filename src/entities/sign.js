@@ -23,7 +23,7 @@
 			this.textSprite = _1gam.p.add.sprite(100, 430, "text-bg");
 			this.textSprite.fixedToCamera = true;
 			this.textSprite.alpha = 0;
-			this.text = _1gam.p.add.text(120, 440, "123", {
+			this.text = _1gam.p.add.text(120, 440, "", {
 				font: "32px slkscr",
 				fill: "#ffffff",
 				align: "left",

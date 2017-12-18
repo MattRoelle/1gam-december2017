@@ -66,7 +66,6 @@
 		}
 
 		createEntity(definition) {
-			console.log(definition.type);
 			this.entities.push(new (entityCtorLookup[definition.type])(definition));
 		}
 

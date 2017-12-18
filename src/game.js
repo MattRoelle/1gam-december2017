@@ -50,9 +50,11 @@
 	function _die() {
 		if (game.player.dead) return;
 		game.player.die();
-		setTimeout(function() {
+
+		const t = _1gam.p.add.tween(_1gam.p.world).to({ alpha: 0 }, 400, Phaser.Easing.Linear.None, true, 1200, 0);
+		t.onComplete.add(() => {
 			_startLevel(game.currentLevel.id);
-		}, 2000);
+		});
 	}
 
 	function _startLevel(s) {
@@ -61,6 +63,7 @@
 		game.player = new player.Player();
 		console.log(s);
 		game.currentLevel = new level.Level(s);
+		_1gam.p.add.tween(_1gam.p.world).to({ alpha: 1 }, 400, Phaser.Easing.Linear.None, true, 300, 0);
 	}
 
 	function _warpToLevel(target) {
