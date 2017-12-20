@@ -3,7 +3,7 @@
 		"browser"
 	],
 	"loadEagerly": [
-		"src/*.js",
-		"vendor/*.js"
+		"src/**/*.js",
+		"vendor/**/*.js"
 	]
 }
