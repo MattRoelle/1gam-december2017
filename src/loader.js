@@ -1,8 +1,5 @@
-;(function() {
-	window._1gam.loader = window._1gam.loader || {};
-	const loader = window._1gam.loader;
-
-	loader.load = (g) => {
+class Loader {
+	load(g) {
 		g.load.tilemap("level1", "assets/levels/level1.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level2", "assets/levels/level2.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level3", "assets/levels/level3.json", null, Phaser.Tilemap.TILED_JSON);
@@ -33,5 +30,8 @@
 
 		g.load.image("turret", "assets/turret.png");
 		g.load.image("turret-bullet", "assets/bullet.png");
-	};
-})();
+
+	}
+}
+
+loader = new Loader();

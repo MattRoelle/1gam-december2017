@@ -1,13 +1,10 @@
-;(function() {
-	window._1gam.input = window._1gam.input || {};
-
-	const input = window._1gam.input;
-
-	input.init = _init;
-
-	function _init() {
-		input.movement = _1gam.p.input.keyboard.createCursorKeys();
-		input.jump = _1gam.p.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		input.interact = _1gam.p.input.keyboard.addKey(Phaser.Keyboard.Z);
+class Input {
+	constructor() {
 	}
-})();
+
+	init() {
+		this.movement = game.phaser.input.keyboard.createCursorKeys();
+		this.jump = game.phaser.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		this.interact = game.phaser.input.keyboard.addKey(Phaser.Keyboard.Z);
+	}
+}

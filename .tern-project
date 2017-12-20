@@ -1,0 +1,9 @@
+{
+	"libs": [
+		"browser"
+	],
+	"loadEagerly": [
+		"src/*.js",
+		"vendor/*.js"
+	]
+}
