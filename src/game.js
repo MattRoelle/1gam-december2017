@@ -11,9 +11,10 @@ class Game {
 		this.utils = new Utils();
 		this.phaser = new Phaser.Game(800, 600, Phaser.AUTO, "game-host", this.setup, false, false);
 
+		const _this = this;
 		document.getElementById("fullscreen").addEventListener("click", () => {
-			_1gam.p.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-			_1gam.p.scale.startFullScreen(false);
+			_this.phaser.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+			_this.phaser.scale.startFullScreen(false);
 		});
 	}
 
@@ -25,7 +26,7 @@ class Game {
 		this.phaser.physics.startSystem(Phaser.Physics.ARCADE);
 		this.input.init();
 		console.log(this);
-		this.startLevel("level1");
+		this.startLevel("level8");
 	}
 
 	update() {

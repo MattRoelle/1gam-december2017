@@ -48,7 +48,7 @@ class Sign {
 		if (game.utils.dist(this.sprite.x, this.sprite.y, game.player.sprite.x, game.player.sprite.y) < C.INTERACT_DISTANCE) {
 			this.arrowSprite.alpha = 1;
 
-			if (game.input.interact.isDown) {
+			if (game.input.interact.isDown || game.input.up()) {
 				if (!this.heldInteractionButtonLastUpdate) {
 					if (!this.open) {
 						this.openText();

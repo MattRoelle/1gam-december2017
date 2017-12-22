@@ -7,6 +7,7 @@ const entityCtorLookup = {
 	"kill": KillZone,
 	"conveyor": Conveyor,
 	"turret": Turret,
+	"tracer": Tracer
 };
 
 class Level {
@@ -60,6 +61,7 @@ class Level {
 	}
 
 	createEntity(definition) {
+		console.log(definition.type);
 		this.entities.push(new (entityCtorLookup[definition.type])(definition));
 	}
 

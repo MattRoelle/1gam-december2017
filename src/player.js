@@ -72,14 +72,14 @@ class Player {
 				speedMultiplier = C.PLAYER_SPEED_START_MULTIPLIER;
 			}
 
-			if (game.input.movement.left.isDown) {
+			if (game.input.left()) {
 				moving = true;
 				if (this.sprite.body.velocity.x > -C.PLAYER_RUN_CUTOFF) {
 					this.sprite.body.velocity.x -= C.PLAYER_SPEED*speedMultiplier;
 					if (this.sprite.body.velocity.x > 0) slowingDown = true;
 				}
 			}
-			else if (game.input.movement.right.isDown) {
+			else if (game.input.right()) {
 				moving = true;
 				if (this.sprite.body.velocity.x < C.PLAYER_RUN_CUTOFF) {
 					this.sprite.body.velocity.x += C.PLAYER_SPEED*speedMultiplier;
@@ -200,6 +200,8 @@ class Player {
 		if (this.exiting) return;
 		this.exiting = true;
 		this.sprite.animations.play("exit");
+		this.sprite.body.velocity.x = 0;
+		this.sprite.body.velocity.y = 0;
 		const t = game.phaser.add.tween(game.phaser.world).to({ alpha: 0 }, 400, Phaser.Easing.Linear.None, true, 350, 0);
 		t.onComplete.add(() => {
 			game.warpToLevel(targetLevel);

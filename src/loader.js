@@ -6,6 +6,8 @@ class Loader {
 		g.load.tilemap("level4", "assets/levels/level4.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level5", "assets/levels/level5.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level6", "assets/levels/level6.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level7", "assets/levels/level7.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level8", "assets/levels/level8.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("testlevel", "assets/levels/testlevel.json", null, Phaser.Tilemap.TILED_JSON);
 
 		g.load.image("tilemap", "assets/tilemap.png", 32, 32);
