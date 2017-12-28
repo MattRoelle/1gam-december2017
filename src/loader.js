@@ -1,12 +1,18 @@
 class Loader {
 	load(g) {
+		g.load.tilemap("title", "assets/levels/title.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level1", "assets/levels/level1.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level2", "assets/levels/level2.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level3", "assets/levels/level3.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level4", "assets/levels/level4.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level5", "assets/levels/level5.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level6", "assets/levels/level6.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level7", "assets/levels/level7.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level8", "assets/levels/level8.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("testlevel", "assets/levels/testlevel.json", null, Phaser.Tilemap.TILED_JSON);
+
+		g.load.image("logo", "assets/logo.png");
+		g.load.image("titletext", "assets/titletext.png");
 
 		g.load.image("tilemap", "assets/tilemap.png", 32, 32);
 		g.load.spritesheet("grape", "assets/grape.png", 32, 32);

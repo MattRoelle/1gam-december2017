@@ -7,6 +7,8 @@ const entityCtorLookup = {
 	"kill": KillZone,
 	"conveyor": Conveyor,
 	"turret": Turret,
+	"tracer": Tracer,
+	"titleText": TitleText
 };
 
 class Level {
@@ -16,6 +18,13 @@ class Level {
 		this.id = tmx;
 		this.loadMap(tmx);
 		this.loadEntities();
+
+		if (this.map.properties && this.map.properties.noFollow) {
+			game.phaser.camera.x = 0;
+			game.phaser.camera.y = 0;
+		} else {
+			game.phaser.camera.follow(game.player.sprite);
+		}
 	}
 
 	setupParticles() {
@@ -60,6 +69,7 @@ class Level {
 	}
 
 	createEntity(definition) {
+		console.log(definition.type);
 		this.entities.push(new (entityCtorLookup[definition.type])(definition));
 	}
 
