@@ -35,7 +35,7 @@ class Game {
 
 		const _this = this;
 		this.showTitle(() => {
-			_this.startLevel("level2");
+			_this.startLevel("title");
 		});
 	}
 

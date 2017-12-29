@@ -102,6 +102,9 @@ class Player {
 			this.sprite.body.velocity.x = Math.min(C.PLAYER_MAX_SPEED
 				, this.sprite.body.velocity.x);
 
+
+			const canJumpFromWall = this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t;
+
 			if (game.input.jump.isDown) {
 				if ((onFloor || 
 					(
@@ -110,16 +113,21 @@ class Player {
 							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
 						) ||
 						(
-
-							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
+							canJumpFromWall
+							 /*&& 
 							(
 								(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
-								(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
+								(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))*/
 						)
 					)
 					&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) && !game.input.jumpLastFrame) {
 					this.lastJumpAt = t;
 					this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
+
+					if (!onFloor && canJumpFromWall && this.lastWallSide != 0) {
+						this.sprite.body.velocity.x = C.PLAYER_WALLSLIDE_JUMP_FORCE * this.lastWallSide * -1;
+						console.log(this.sprite.body.velocity.x);
+					}
 				}
 				else if (!onFloor && t < this.lastJumpAt + C.PLAYER_JUMP_HOLD_THRESHOLD) {
 					this.sprite.body.velocity.y += C.PLAYER_JUMP_HOLD_FORCE;
@@ -144,9 +152,11 @@ class Player {
 				else if (this.sprite.body.blocked.right) this.lastWallSide = 1;
 
 				if (this.lastWallSlideAt + C.PLAYER_WALLSLIDE_INTERVAL < game.phaser.time.now) {
-					this.sprite.body.velocity.y *= 0.2;
+					this.sprite.body.velocity.y *= 0.1;
 				}
-				this.sprite.animations.play("wallslide");
+				if (!onFloor) {
+					this.sprite.animations.play("wallslide");
+				}
 				this.wallslideEmitter.on = true;
 				this.lastWallSlideAt = game.phaser.time.now;
 			} else {
