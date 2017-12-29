@@ -27,9 +27,13 @@ class Sign {
 		});
 		this.text.fixedToCamera = true;
 		this.textSprite.alpha = 0;
+
 	}
 
 	update() {
+		this.textSprite.bringToTop();
+		this.text.bringToTop();
+
 		const dt = game.phaser.time.now - this.timeOpened;
 		const charsVisible = Math.floor(dt/40);
 

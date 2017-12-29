@@ -44,7 +44,6 @@ class Player {
 	}
 
 	update() {
-		this.sprite.bringToTop();
 		if (!this.dead && !this.exiting) {
 			let speedMultiplier = 1;
 			let moving = false;
@@ -103,24 +102,25 @@ class Player {
 			this.sprite.body.velocity.x = Math.min(C.PLAYER_MAX_SPEED
 				, this.sprite.body.velocity.x);
 
-			if (game.input.jump.isDown) { if ((onFloor || 
-				(
-					(!onWall &&
-						this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
-						this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
-					) ||
+			if (game.input.jump.isDown) {
+				if ((onFloor || 
 					(
-
-						this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
+						(!onWall &&
+							this.lastOnFloorAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t &&
+							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD < t
+						) ||
 						(
-							(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
-							(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
+
+							this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t && 
+							(
+								(this.sprite.body.velocity.x < 0 && this.lastWallSide == 1) ||
+								(this.sprite.body.velocity.x > 0 && this.lastWallSide == -1))
+						)
 					)
-				)
-				&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL)) {
-				this.lastJumpAt = t;
-				this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
-			}
+					&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) && !game.input.jumpLastFrame) {
+					this.lastJumpAt = t;
+					this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
+				}
 				else if (!onFloor && t < this.lastJumpAt + C.PLAYER_JUMP_HOLD_THRESHOLD) {
 					this.sprite.body.velocity.y += C.PLAYER_JUMP_HOLD_FORCE;
 				}

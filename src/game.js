@@ -35,7 +35,7 @@ class Game {
 
 		const _this = this;
 		this.showTitle(() => {
-			_this.startLevel("title");
+			_this.startLevel("level2");
 		});
 	}
 
@@ -87,9 +87,11 @@ class Game {
 		if (this.state == GAME_STATES.TITLE) {
 
 		} else {
+			this.player.sprite.bringToTop();
 			this.currentLevel.update();
 			this.player.update();
 		}
+		this.input.update();
 	}
 
 	render() {

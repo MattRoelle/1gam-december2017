@@ -99,6 +99,25 @@
                  "width":32,
                  "x":511,
                  "y":543
+                }, 
+                {
+                 "height":31.75,
+                 "id":82,
+                 "name":"sign",
+                 "properties":
+                    {
+                     "text1":"Get out!"
+                    },
+                 "propertytypes":
+                    {
+                     "text1":"string"
+                    },
+                 "rotation":0,
+                 "type":"sign",
+                 "visible":true,
+                 "width":30.5,
+                 "x":512.5,
+                 "y":95.75
                 }],
          "opacity":1,
          "properties":
@@ -114,7 +133,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":82,
+ "nextobjectid":86,
  "orientation":"orthogonal",
  "properties":
     {
