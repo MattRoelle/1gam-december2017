@@ -8,7 +8,8 @@ const entityCtorLookup = {
 	"conveyor": Conveyor,
 	"turret": Turret,
 	"tracer": Tracer,
-	"titleText": TitleText
+	"titleText": TitleText,
+	"endzone": EndZone
 };
 
 class Level {

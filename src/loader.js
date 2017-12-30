@@ -7,10 +7,14 @@ class Loader {
 		g.load.tilemap("level3.5", "assets/levels/level3.5.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level4", "assets/levels/level4.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level5", "assets/levels/level5.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level5.5", "assets/levels/level5.5.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level6", "assets/levels/level6.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level7", "assets/levels/level7.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level7.5", "assets/levels/level7.5.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("level8", "assets/levels/level8.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level9", "assets/levels/level9.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("level10", "assets/levels/level10.json", null, Phaser.Tilemap.TILED_JSON);
+		g.load.tilemap("balcony", "assets/levels/balcony.json", null, Phaser.Tilemap.TILED_JSON);
 		g.load.tilemap("testlevel", "assets/levels/testlevel.json", null, Phaser.Tilemap.TILED_JSON);
 
 		g.load.image("logo", "assets/logo.png");
@@ -39,6 +43,14 @@ class Loader {
 		g.load.image("turret", "assets/turret.png");
 		g.load.image("turret-bullet", "assets/bullet.png");
 
+		g.load.audio("music", ["assets/audio/theme.ogg"]);
+		g.load.audio("walk", ["assets/audio/walk.wav"]);
+		g.load.audio("walk2", ["assets/audio/walk2.wav"]);
+		g.load.audio("jump", ["assets/audio/jump.wav"]);
+		g.load.audio("death", ["assets/audio/death.wav"]);
+		g.load.audio("deathexpl", ["assets/audio/deathexpl.wav"]);
+		g.load.audio("door", ["assets/audio/door.wav"]);
+		g.load.audio("door2", ["assets/audio/door2.wav"]);
 	}
 }
 

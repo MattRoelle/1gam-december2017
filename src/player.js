@@ -41,9 +41,14 @@ class Player {
 
 		this.dead = false;
 		this.exiting = false;
+
+		this.lastWalkBlipAt = 0;
+		this.blips = 0;
 	}
 
 	update() {
+		const t = game.phaser.time.now;
+
 		if (!this.dead && !this.exiting) {
 			let speedMultiplier = 1;
 			let moving = false;
@@ -51,7 +56,6 @@ class Player {
 			const absXVel = Math.abs(this.sprite.body.velocity.x)
 			const onWall = this.sprite.body.onWall();
 			const onFloor = this.sprite.body.onFloor() || this.sprite.body.touching.down;
-			const t = game.phaser.time.now;
 
 			if (onWall && this.sprite.body.velocity.y > 150) {
 				this.sprite.body.gravity.y = C.GRAVITY*C.PLAYER_WALLSLIDE_GRAVITY_SCALE;
@@ -95,6 +99,13 @@ class Player {
 				slowingDown = true;
 			} else {
 				this.sprite.animations.play("run");
+
+				const thresh = C.PLAYER_WALK_BLIP_SPEED * (((1 - (absXVel / C.PLAYER_MAX_SPEED)) * 0.7) + 0.3);
+				if (onFloor && t - this.lastWalkBlipAt > thresh) {
+					this.lastWalkBlipAt = t;
+					this.blips++;
+					game.audio.playSfx(this.blips % 2 == 0 ? SFX_TYPES.WALK : SFX_TYPES.WALK2);
+				}
 			}
 
 			this.sprite.body.velocity.x = Math.max(-C.PLAYER_MAX_SPEED
@@ -123,6 +134,8 @@ class Player {
 					&& t > this.lastJumpAt + C.PLAYER_JUMP_INTERVAL) && !game.input.jumpLastFrame) {
 					this.lastJumpAt = t;
 					this.sprite.body.velocity.y = C.PLAYER_JUMP_FORCE;
+
+					game.audio.playSfx(SFX_TYPES.JUMP);
 
 					if (!onFloor && canJumpFromWall && this.lastWallSide != 0) {
 						this.sprite.body.velocity.x = C.PLAYER_WALLSLIDE_JUMP_FORCE * this.lastWallSide * -1;
@@ -182,6 +195,12 @@ class Player {
 			//this.sprite.body.velocity.y = Math.max(C.PLAYER_MAX_FALL_SPEED, this.sprite.body.velocity.y);
 
 			this.onWallLastFrame = onWall;
+		} else if (this.exiting) {
+			if (t - this.lastWalkBlipAt > C.PLAYER_EXIT_BLIP_SPEED) {
+				this.lastWalkBlipAt = t;
+				this.blips++;
+				game.audio.playSfx(this.blips % 2 == 0 ? SFX_TYPES.DOOR : SFX_TYPES.DOOR2);
+			}
 		}
 	}
 
@@ -207,6 +226,7 @@ class Player {
 
 	exit(targetLevel) {
 		if (this.exiting) return;
+
 		this.exiting = true;
 		this.sprite.animations.play("exit");
 		this.sprite.body.velocity.x = 0;

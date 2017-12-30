@@ -17,5 +17,6 @@ server.deploy({
         appcache: 'text/cache-manifest',
         wav: "audio/wav",
         ttf: "font/ttf",
+        ogg: "audio/ogg"
     }
 });
