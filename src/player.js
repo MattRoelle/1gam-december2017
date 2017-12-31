@@ -116,7 +116,7 @@ class Player {
 
 			const canJumpFromWall = this.lastWallSlideAt + C.PLAYER_JUMP_FORGIVENESS_THRESHOLD > t;
 
-			if (game.input.jump.isDown) {
+			if (game.input.isJumpDown()) {
 				if ((onFloor || 
 					(
 						(!onWall &&
@@ -196,11 +196,13 @@ class Player {
 
 			this.onWallLastFrame = onWall;
 		} else if (this.exiting) {
+			/*
 			if (t - this.lastWalkBlipAt > C.PLAYER_EXIT_BLIP_SPEED) {
 				this.lastWalkBlipAt = t;
 				this.blips++;
 				game.audio.playSfx(this.blips % 2 == 0 ? SFX_TYPES.DOOR : SFX_TYPES.DOOR2);
 			}
+			*/
 		}
 	}
 
@@ -226,6 +228,8 @@ class Player {
 
 	exit(targetLevel) {
 		if (this.exiting) return;
+
+		game.audio.playSfx(SFX_TYPES.DOOR);
 
 		this.exiting = true;
 		this.sprite.animations.play("exit");

@@ -31,6 +31,13 @@ const SFX_TYPES = {
  
 class GameAudio {
 	constructor() {
+		this.muted = false;
+	}
+
+	toggleMute() {
+		this.muted = !this.muted;
+		game.phaser.sound.volume = this.muted ? 0 : 1;
+		return this.muted;
 	}
 
 	playMusic() {

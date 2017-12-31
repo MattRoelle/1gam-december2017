@@ -1,7 +1,8 @@
 const GAME_STATES = {
 	TITLE: 0,
 	IN_GAME: 1,
-	VICTORY: 2
+	VICTORY: 2,
+	PAUSED: 3
 };
 
 class Game {
@@ -19,12 +20,11 @@ class Game {
 		this.phaser = new Phaser.Game(800, 600, Phaser.AUTO, "game-host", this.setup, false, false);
 
 		this.state = GAME_STATES.TITLE;
+	}
 
-		const _this = this;
-		document.getElementById("fullscreen").addEventListener("click", () => {
-			_this.phaser.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-			_this.phaser.scale.startFullScreen(false);
-		});
+	fullscreen() {
+		this.phaser.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+		this.phaser.scale.startFullScreen(false);
 	}
 
 	preload() {
@@ -39,11 +39,10 @@ class Game {
 		this.showTitle(() => {
 			_this.startLevel("title");
 		});
-
-		this.audio.startMusic();
 	}
 
 	showTitle(cb) {
+
 		const bg = this.phaser.add.graphics(0, 0);
 		bg.beginFill(0xFFFFFF);
 		bg.drawRect(0, 0, 800, 600); 
@@ -74,6 +73,8 @@ class Game {
 		};
 
 		window.addEventListener("keydown", destroyCb);
+		console.log(_this.input.gamepad);
+		_this.input.gamepad.onDownCallback = destroyCb;
 
 		const fadeInCb = () => {
 			if (destroyed) return;
@@ -100,9 +101,19 @@ class Game {
 				break;
 			case GAME_STATES.VICTORY:
 				break;
+			case GAME_STATES.PAUSED:
+				break;
 		}
 
 		this.input.update();
+
+		if (!!this.ui) {
+			this.ui.update();
+			if (!this.onTitleOrFinal) {
+				this.playerTime = this.phaser.time.now - this.timeStarted;
+				this.ui.setTime(this.playerTime);
+			}
+		}
 	}
 
 	render() {
@@ -112,6 +123,9 @@ class Game {
 	die() {
 		if (this.player.dead) return;
 		this.player.die();
+
+		this.deaths++;
+		this.ui.setDeaths(this.deaths);
 
 		this.audio.pauseMusic();
 
@@ -130,6 +144,22 @@ class Game {
 	}
 
 	startLevel(s) {
+		if (s === "title") {
+			this.ui = new UIController();
+			this.ui.setDeaths(0);
+			this.ui.setTime(0);
+			this.deaths = 0;
+			this.onTitleOrFinal = true;
+		} else if (s === "balcony") {
+			this.onTitleOrFinal = true;
+		} else if (s === "level1") {
+			if (this.onTitleOrFinal) {
+				this.timeStarted = this.phaser.time.now;
+				this.audio.startMusic();
+			}
+			this.onTitleOrFinal = false;
+		}
+
 		if (!!this.player) this.player.destroy();
 		if (!!this.currentLevel) this.currentLevel.destroy();
 		this.player = new Player();
@@ -144,13 +174,17 @@ class Game {
 	win() {
 		if (this.state == GAME_STATES.VICTORY) return;
 
+		this.ui.destroy();
+
 		this.state = GAME_STATES.VICTORY;
 		this.player.sprite.body.moves = false;
 
 		const bg = this.phaser.add.graphics(0, 0);
 		bg.beginFill(0xFFFFFF);
-		bg.drawRect(0, 0, 800, 600); 
+		bg.drawRect(0, -50, 800, 700); 
 		bg.alpha = 0;
+
+		const _this = this;
 
 		const tween = this.phaser.add.tween(bg).to({ alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, 300, 0);
 		tween.onComplete.add(() => {
@@ -164,12 +198,12 @@ class Game {
 			text.fixedToCamera = true;
 			text.alpha = 0;
 
-			const text2 = game.phaser.add.text(400, 450, "PRESS ANY KEY TO RETURN TO THE MENU", {
+			const text2 = game.phaser.add.text(400, 450, "THANKS FOR PLAYING! PRESS ANY KEY TO RETURN TO THE MENU", {
 				font: "32px slkscr",
 				fill: "#000000",
 				align: "center",
 				wordWrap: true,
-				wordWrapWidth: 400
+				wordWrapWidth: 500
 			});
 			text2.anchor.set(0.5);
 			text2.fixedToCamera = true;
@@ -179,7 +213,53 @@ class Game {
 			this.phaser.add.tween(text2).to({ alpha: 1 }, 500, Phaser.Easing.Linear.None, true, 500, 0);
 			
 			tween2.onComplete.add(() => {
+				const at = this.playerTime/1000;
+				const minutes = Math.floor(at/60);
+				const seconds = Math.floor(at - (minutes*60));
+				const timeTextText = game.utils.padZero(minutes) + ":" + game.utils.padZero(seconds);
+				const timeText = game.phaser.add.text(400, 100, "ESCAPED IN: " + timeTextText, {
+					font: "32px slkscr",
+					fill: "#000000",
+					align: "center",
+					wordWrap: true,
+					wordWrapWidth: 500
+				});
+				timeText.anchor.set(0.5);
+				timeText.fixedToCamera = true;
+
+				const deathText = game.phaser.add.text(400, 150, "YOU DIED " + this.deaths + " TIMES", {
+					font: "32px slkscr",
+					fill: "#000000",
+					align: "center",
+					wordWrap: true,
+					wordWrapWidth: 500
+				});
+				deathText.anchor.set(0.5);
+				timeText.fixedToCamera = true;
+
+
+				setTimeout(() => {
+					let pressed = false;
+	
+					const exitFn = () => {
+						if (pressed) return;
+						pressed = true;
+						_this.reset();
+					};
+					window.addEventListener("keydown", exitFn);
+					_this.input.gamepad.onDownCallback = exitFn;
+
+				}, 500);
 			});
+		});
+	}
+
+	reset() {
+		this.phaser.world.removeAll();
+		this.audio.pauseMusic();
+		const _this = this;
+		this.showTitle(() => {
+			_this.startLevel("title");
 		});
 	}
 }

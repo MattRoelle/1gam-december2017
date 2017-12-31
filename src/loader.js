@@ -35,6 +35,10 @@ class Loader {
 		g.load.image("sign", "assets/sign.png");
 		g.load.image("arrow", "assets/arrow.png");
 		g.load.image("text-bg", "assets/text.png");
+		g.load.image("ui-bg", "assets/ui-top.png");
+		g.load.image("dead-grape", "assets/dead-grape.png");
+		g.load.image("mute", "assets/mute.png");
+		g.load.image("unmute", "assets/unmute.png");
 
 		g.load.image("spinner-base", "assets/spinner-base.png");
 		g.load.image("spinner-head", "assets/spinner-head.png");
